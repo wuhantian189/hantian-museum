@@ -25,6 +25,32 @@ step. The only external dependencies are unpkg (React 18.3.1, ReactDOM, Babel st
 and Google Fonts (Source Serif 4, Noto Serif SC), so the page does need a network
 connection for its first paint.
 
+## Deploy
+
+Live at **https://wuhantian189.github.io/hantian-museum/**, served from `main` at the
+repository root. There is no build step and no CI — pushing to `main` republishes:
+
+```sh
+git add -A && git commit -m "..." && git push
+```
+
+Pages usually rebuilds within a minute. `gh api repos/wuhantian189/hantian-museum/pages
+--jq .status` reports where it is up to.
+
+**`.nojekyll` is load-bearing.** Pages runs Jekyll by default, and Jekyll refuses to
+publish anything under a leading-underscore path. Three files sit in exactly that
+position — `_ds/broadsheet-…/styles.css`, `_ds/broadsheet-…/_ds_bundle.js` and
+`img/_themes.json`. Without that empty file at the root the site deploys and renders as
+unstyled text, with no error anywhere to explain it. Do not delete it.
+
+Everything is referenced by relative path, so the site works unchanged from a subpath, from
+the domain root, or off the local filesystem.
+
+Payload is 138 files / 125 MB, of which the four MP4s are 101 MB. That sits inside the
+1 GB published-site limit and the 100 MB per-file limit with room to spare, but Pages has a
+soft bandwidth limit of 100 GB/month — roughly 3,000 full video plays. If the site ever
+draws real traffic, moving the videos to a CDN or a video host is the first thing to do.
+
 ## Layout
 
 | Path | What it is |
