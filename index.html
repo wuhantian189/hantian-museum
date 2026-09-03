@@ -333,6 +333,18 @@
     <p style="margin: 0; font-size: clamp(18px, 2vw, 24px); line-height: 1.5; max-width: 30em; color: var(--color-neutral-900);">{{ p.standfirst }}</p>
   </div>
 
+  <sc-if value="{{ p.hasVideos }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width: 1240px; padding: clamp(26px, 4vw, 46px) clamp(16px, 3vw, 48px) 0;">
+    <sc-for list="{{ p.videos }}" as="v" hint-placeholder-count="1">
+      <figure style="margin: 0 0 clamp(18px, 2.6vw, 30px);">
+        <figcaption style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 8px;">{{ ui.filmFrom }}</figcaption>
+        <video src="{{ v.src }}" poster="{{ v.poster }}" controls="controls" preload="none" playsinline="playsinline" style="display: block; width: 100%; height: auto; background: var(--color-text);"></video>
+        <figcaption style="margin-top: 10px; font-size: 13px; font-style: {{ it }}; line-height: 1.5; color: var(--color-neutral-700);">{{ v.caption }}</figcaption>
+      </figure>
+    </sc-for>
+  </div>
+  </sc-if>
+
   <div style="max-width: 1240px; padding: 0 clamp(16px, 3vw, 48px) clamp(50px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: flex-start; gap: clamp(26px, 4vw, 60px);">
     <aside data-toc="true" style="flex: 1 1 180px; max-width: 250px; min-width: 0; position: sticky; top: clamp(56px, 8vh, 78px); padding-top: clamp(44px, 7vw, 96px);">
       <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 14px;">{{ ui.contents }}</span>
@@ -395,13 +407,6 @@
               <span style="display: block; margin-top: 8px; font-size: 12px; color: var(--color-neutral-600);">{{ ui.clickToEnlarge }}</span>
             </sc-if>
           </div>
-        </sc-if>
-        <sc-if value="{{ s.hasVideo }}" hint-placeholder-val="{{ false }}">
-          <figure style="margin: clamp(22px, 3.4vw, 38px) 0 0;">
-            <figcaption style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 8px;">{{ ui.filmFrom }}</figcaption>
-            <video src="{{ s.videoSrc }}" poster="{{ s.videoPoster }}" controls="controls" preload="none" playsinline="playsinline" style="display: block; width: 100%; height: auto; background: var(--color-text);"></video>
-            <figcaption style="margin-top: 10px; font-size: 13px; font-style: {{ it }}; line-height: 1.5; color: var(--color-neutral-700);">{{ s.videoCaption }}</figcaption>
-          </figure>
         </sc-if>
         <sc-if value="{{ s.hasCode }}" hint-placeholder-val="{{ false }}">
           <figure style="margin: clamp(20px, 3vw, 32px) 0 0;">
@@ -914,12 +919,14 @@ class Component extends DCLogic {
         kicker: t(pr.kicker), title: t(pr.title), standfirst: t(pr.standfirst),
         year: t(pr.year), role: t(pr.role), collab: t(pr.collab),
         methods: (pr.methods || []).map(t), results: (pr.results || []).map(t),
+        hasVideos: (pr.videos || []).length > 0,
+        videos: (pr.videos || []).map(v => ({ src: v.src, poster: v.poster || "", caption: t(v.caption) })),
         hero: img(heroOf(pr)), hallName: t(ph.name),
         label: t(pr.title), caseLabel: t(pr.title) + " — case study",
       };
       const rawSecs = (pr.parts && pr.parts.length)
         ? pr.parts.map(p => ({ id: p.id, label: p.label, heading: p.label, lede: null, body: p.summary,
-                               images: [], slides: p.slides || [], code: p.code || null, video: p.video || null }))
+                               images: [], slides: p.slides || [], code: p.code || null }))
         : (pr.sections || []).map(s => Object.assign({ slides: [], code: null }, s));
       sections = rawSecs.map((s, n) => {
         const sid = "sec-" + pid + "-" + s.id;
@@ -947,10 +954,6 @@ class Component extends DCLogic {
           return { src, alt, framed: !!pr.slideFrame, plain: !pr.slideFrame,
                    zoomLabel: UI.fullSize + ": " + alt, zoom: () => this.setState({ lightbox: src, lightboxAlt: alt }) };
         }),
-        hasVideo: !!(s.video && s.video.src),
-        videoSrc: s.video ? s.video.src : "",
-        videoPoster: s.video ? (s.video.poster || "") : "",
-        videoCaption: s.video ? t(s.video.caption) : "",
         hasCode: !!s.code,
         codeLabel: s.code ? t(s.code.label) : "",
         codeText: s.code ? s.code.text : "",
@@ -987,7 +990,7 @@ class Component extends DCLogic {
       sceneO: z ? z.o : "50% 50%",
       sceneOp: z ? 0 : 1,
       doors,
-      p: p || { hero: { src: "", bg: "none", cls: "", ph: "", ratio: "3 / 2", fit: "cover", pos: "50% 50%", caption: "", alt: "", zoom: null, zoomLabel: "", key: null }, methods: [], results: [] },
+      p: p || { hero: { src: "", bg: "none", cls: "", ph: "", ratio: "3 / 2", fit: "cover", pos: "50% 50%", caption: "", alt: "", zoom: null, zoomLabel: "", key: null }, methods: [], results: [], videos: [], hasVideos: false },
       hasLightbox: !!st.lightbox,
       lightbox: st.lightbox || "",
       lightboxBg: st.lightbox ? "url('" + st.lightbox + "')" : "none",
