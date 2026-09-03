@@ -34,10 +34,9 @@ const PROJECTS = {
       T("Paper published in the International Journal of Human–Computer Studies", "论文发表于《International Journal of Human–Computer Studies》"),
     ],
     videos: [
-      { src: "video/talevision.mp4", poster: "video/talevision-poster.jpg",
-        caption: T("Graduation project film — the device turning speech into a tactile image", "毕业设计视频 — 从语音到触觉图像的完整演示") },
       { src: "video/talevision-defence-school.mp4", poster: "video/talevision-defence-school-poster.jpg",
-        caption: T("School defence presentation, recorded in full", "学院答辩视频全程记录") },
+        caption: T("Product Design Video — A Complete Demonstration from Voice Input to Tactile Images",
+                   "产品设计视频 — 从语音输入到触觉图像的完整演示") },
     ],
     hero: { src: "img/web/tv-hero.jpg", ratio: "2 / 1", pos: "50% 92%", crop: true, caption: T("TaleVision in a home study setting", "家庭自学场景中的点视机") },
     marks: [
