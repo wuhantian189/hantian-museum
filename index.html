@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./museum-content.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="_ds/broadsheet-a118b4b5-10e1-4dc0-a7f9-d22403f3f343/styles.css" />
+<script src="_ds/broadsheet-a118b4b5-10e1-4dc0-a7f9-d22403f3f343/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&amp;display=swap" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--color-bg); color: var(--color-text); font-family: "Source Serif 4", "Noto Serif SC", Georgia, serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  h1, h2, h3, h4 { font-family: "Source Serif 4", "Noto Serif SC", Georgia, serif; }
+  a { color: var(--color-accent-700); text-decoration: none; }
+  a:hover { color: #1186ac; }
+  button { font-family: inherit; color: inherit; }
+  button:focus-visible, [role="button"]:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  p { text-wrap: pretty; }
+  /* below the natural wrap point the contents list sits above the text as a row */
+  @media (max-width: 890px) {
+    [data-toc] { position: static !important; max-width: none !important; flex-basis: 100% !important; padding-top: clamp(28px, 5vw, 44px) !important; }
+    [data-toc] nav { flex-direction: row !important; flex-wrap: wrap !important; gap: 2px 20px !important; }
+    [data-toc] nav button { width: auto !important; }
+  }
+  @keyframes gm-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-0.1em); } }
+  @keyframes gm-step-a { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }
+  @keyframes gm-step-b { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+  @keyframes fig-nod-a { 0%, 100% { transform: rotate(-1.8deg); } 44% { transform: rotate(2.6deg); } 72% { transform: rotate(0.4deg); } }
+  @keyframes fig-nod-b { 0%, 100% { transform: rotate(2deg); } 38% { transform: rotate(-2.4deg) translateY(1%); } 66% { transform: rotate(-0.3deg); } }
+  @keyframes fig-nod-c { 0%, 100% { transform: rotate(-1.5deg) translateY(0); } 50% { transform: rotate(2.6deg) translateY(-1.2%); } }
+  @keyframes fig-sway-a { 0%, 100% { transform: rotate(-1.2deg); } 50% { transform: rotate(1.5deg); } }
+  @keyframes fig-sway-b { 0%, 100% { transform: rotate(1.3deg) translateY(0); } 46% { transform: rotate(-1.4deg) translateY(-0.7%); } }
+  /* The gallery scenes. The artboard is 1672x941 (ratio 1.777, effectively 16:9).
+     Narrow viewports keep that ratio exactly. From 640px up the scene fills the
+     window and the artwork COVERS it, centre-cropped by whichever axis is short
+     so it never stretches and never leaves the page background showing. The
+     crop is capped at 3% per side (the wall labels sit about 4% in), and past
+     that bound the height still fills, so the remainder is taken as a little
+     vertical stretch rather than as background. */
+  [data-scene] { width: 100%; aspect-ratio: 1672 / 941; }
+  @media (min-width: 640px) {
+    /* Fill the window without ever cropping. The scene carries text placed at
+       fixed percentages — wall labels, taglines, the hall note — so any crop
+       eventually clips one of them (a 3% side crop already cut the HerMoony
+       tagline). So the box takes the greater of the window height and the
+       aspect height: on a window wider than 1.777 it keeps the true ratio and
+       the page scrolls, and on a taller one it fills the height, the artwork
+       stretching with it. Everything stays on screen either way. */
+    [data-scene] { height: max(100vh, calc(100vw * 941 / 1672)); aspect-ratio: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { [data-ghost] *, [data-figures] * { animation: none !important; } }
+</style>
+</helmet>
+
+<div style="background: var(--color-bg);">
+
+<sc-if value="{{ isEntrance }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Entrance" style="width: 100%; overflow: hidden; background: var(--color-bg);">
+  <div data-scene="true" style="position: relative; container-type: size;">
+    <div data-scene-art="true" style="position: absolute; inset: 0; container-type: size; overflow: hidden; background-color: #ece9ee; background-image: url('img/hall-entrance.jpg'); background-size: 100% 100%; background-repeat: no-repeat; transform: {{ sceneT }}; transform-origin: {{ sceneO }}; opacity: {{ sceneOp }}; transition: transform 640ms cubic-bezier(0.42, 0, 0.2, 1), opacity 300ms ease 340ms;">
+    <div style="position: absolute; left: 28%; right: 28%; bottom: 58.5%; pointer-events: none; text-align: center;">
+      <span style="display: block; font-size: max(11px, 1.3cqh); letter-spacing: 0.24em; text-transform: uppercase; color: var(--color-accent-700);">{{ ui.entranceKicker }}</span>
+      <span style="display: block; margin: max(6px, 1.4cqh) 0 max(5px, 1cqh); font-size: max(13px, 4.2cqh); font-weight: 600; line-height: 1.06; letter-spacing: -0.022em; color: var(--color-text);">{{ ui.museumMark }}</span>
+      <span style="display: block; font-size: max(12px, 1.9cqh); line-height: 1.4; color: var(--color-neutral-800);">{{ ui.statement }}</span>
+      <span style="display: block; margin-top: max(4px, 0.8cqh); font-size: max(11px, 1.2cqh); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-neutral-600);">{{ ui.museumSub }}</span>
+      <span style="display: block; margin: max(5px, 1.4cqh) auto 0; max-width: 36em; font-size: max(11px, 1.3cqh); line-height: 1.5; color: var(--color-neutral-800);">{{ ui.statementBody }}</span>
+    </div>
+
+    <div role="button" tabindex="0" onClick="{{ enterDoor }}" onKeyDown="{{ enterDoorKey }}" onMouseEnter="{{ doorEnter }}" onMouseLeave="{{ doorLeave }}" onFocus="{{ doorEnter }}" onBlur="{{ doorLeave }}" aria-label="{{ ui.open }}" style="position: absolute; left: 44.02%; width: 11.84%; top: 46.01%; height: 24.44%; cursor: pointer;">
+      <div style="position: absolute; inset: 0; background: #f7f5f1; opacity: {{ doorTint }}; transition: opacity 240ms ease; mix-blend-mode: soft-light;"></div>
+      <div style="position: absolute; left: 7%; right: 7%; top: 7%; pointer-events: none; text-align: center;">
+        <span style="display: block; font-size: max(11px, 1.3cqh); line-height: 1.35; letter-spacing: 0.06em; text-transform: uppercase; text-wrap: balance; color: rgba(247,245,241,0.95);">{{ ui.open }} →</span>
+      </div>
+    </div>
+
+    <div data-ghost="true" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">{{ ghosts }}</div>
+      <div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.cloud }}; background-size: 640px 640px; opacity: {{ paper.cloudOp }}; mix-blend-mode: soft-light;"></div>
+      <div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div>
+    </div>
+    <div style="position: absolute; right: max(12px, 1.5cqh); top: max(10px, 1.3cqh); z-index: 20; display: flex; align-items: baseline; gap: max(6px, 0.8cqh);">
+      <button onClick="{{ setEn }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.25cqh); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ enOp }};" style-hover="opacity: 1;">EN</button>
+      <span style="font-size: max(11px, 1.25cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: 0.45;">/</span>
+      <button onClick="{{ setZh }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.35cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ zhOp }};" style-hover="opacity: 1;">中文</button>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isConcourse }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Concourse" style="width: 100%; overflow: hidden; background: var(--color-bg);">
+  <div data-scene="true" style="position: relative; container-type: size;">
+    <div data-scene-art="true" style="position: absolute; inset: 0; container-type: size; overflow: hidden;  transform: {{ sceneT }}; transform-origin: {{ sceneO }}; opacity: {{ sceneOp }}; transition: transform 640ms cubic-bezier(0.42, 0, 0.2, 1), opacity 300ms ease 340ms;">
+    <div style="position: absolute; inset: 0; background: #eaedf1;"></div>
+    <div style="position: absolute; left: 0; right: 0; top: 15%; height: 63%; background: #dfe4ea;"></div>
+    <div style="position: absolute; left: 0; right: 0; top: 78%; bottom: 0; background: #c3d3bb;"></div>
+    <div style="position: absolute; left: 0; top: 0; width: 7%; height: 100%; clip-path: polygon(0% 5%, 100% 15%, 100% 78%, 0% 87%); background: #d6dce4;"></div>
+    <div style="position: absolute; right: 0; top: 0; width: 7%; height: 100%; clip-path: polygon(0% 15%, 100% 5%, 100% 87%, 0% 78%); background: #d6dce4;"></div>
+
+    <div style="position: absolute; left: 7%; top: 8%; pointer-events: none;">
+      <span style="display: block; font-size: max(11px, 1.3cqh); letter-spacing: 0.24em; text-transform: uppercase; color: var(--color-accent-700);">{{ ui.concourse }}</span>
+      <span style="display: block; margin-top: max(4px, 0.8cqh); font-size: max(11px, 1.7cqh); line-height: 1.45; color: var(--color-neutral-800);">{{ ui.concourseNote }}</span>
+    </div>
+
+        <div role="button" tabindex="0" onClick="{{ dA.go }}" onKeyDown="{{ dA.key }}" onMouseEnter="{{ dA.enter }}" onMouseLeave="{{ dA.leave }}" onFocus="{{ dA.enter }}" onBlur="{{ dA.leave }}" aria-label="{{ dA.aria }}" style="position: absolute; left: 14%; width: 15%; top: 17%; bottom: 22%; cursor: pointer;">
+          <div style="position: absolute; left: 0; right: 0; top: 36%; bottom: 0; background: #4e4276;">
+            <div style="position: absolute; inset: 0; background: #f7f5f1; opacity: {{ dA.tint }}; transition: opacity 240ms ease; mix-blend-mode: soft-light;"></div>
+            <div style="position: absolute; left: 11%; right: 11%; top: 9%; pointer-events: none;">
+              <span style="display: block; font-size: max(11px, 1.3cqh); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(247,245,241,0.9);">{{ ui.doorCue }} →</span>
+            </div>
+          </div>
+          <div style="position: absolute; left: 0; right: 0; top: 0; height: 34%; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none;">
+            <span style="display: block; font-size: max(16px, 4.2cqh); line-height: 1; color: var(--color-accent-700);">{{ dA.num }}</span>
+            <span style="display: block; margin-top: max(4px, 0.9cqh); font-size: max(11px, 2.1cqh); font-weight: 600; line-height: 1.16; letter-spacing: -0.012em; color: var(--color-text);">{{ dA.name }}</span>
+            <span style="display: block; margin-top: max(3px, 0.6cqh); font-size: max(11px, 1.24cqh); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-600);">{{ dA.count }}</span>
+          </div>
+        </div>
+        <div role="button" tabindex="0" onClick="{{ dB.go }}" onKeyDown="{{ dB.key }}" onMouseEnter="{{ dB.enter }}" onMouseLeave="{{ dB.leave }}" onFocus="{{ dB.enter }}" onBlur="{{ dB.leave }}" aria-label="{{ dB.aria }}" style="position: absolute; left: 42.5%; width: 15%; top: 17%; bottom: 22%; cursor: pointer;">
+          <div style="position: absolute; left: 0; right: 0; top: 36%; bottom: 0; background: #c74a33;">
+            <div style="position: absolute; inset: 0; background: #f7f5f1; opacity: {{ dB.tint }}; transition: opacity 240ms ease; mix-blend-mode: soft-light;"></div>
+            <div style="position: absolute; left: 11%; right: 11%; top: 9%; pointer-events: none;">
+              <span style="display: block; font-size: max(11px, 1.3cqh); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(247,245,241,0.9);">{{ ui.doorCue }} →</span>
+            </div>
+          </div>
+          <div style="position: absolute; left: 0; right: 0; top: 0; height: 34%; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none;">
+            <span style="display: block; font-size: max(16px, 4.2cqh); line-height: 1; color: var(--color-accent-700);">{{ dB.num }}</span>
+            <span style="display: block; margin-top: max(4px, 0.9cqh); font-size: max(11px, 2.1cqh); font-weight: 600; line-height: 1.16; letter-spacing: -0.012em; color: var(--color-text);">{{ dB.name }}</span>
+            <span style="display: block; margin-top: max(3px, 0.6cqh); font-size: max(11px, 1.24cqh); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-600);">{{ dB.count }}</span>
+          </div>
+        </div>
+        <div role="button" tabindex="0" onClick="{{ dC.go }}" onKeyDown="{{ dC.key }}" onMouseEnter="{{ dC.enter }}" onMouseLeave="{{ dC.leave }}" onFocus="{{ dC.enter }}" onBlur="{{ dC.leave }}" aria-label="{{ dC.aria }}" style="position: absolute; left: 71%; width: 15%; top: 17%; bottom: 22%; cursor: pointer;">
+          <div style="position: absolute; left: 0; right: 0; top: 36%; bottom: 0; background: #26406d;">
+            <div style="position: absolute; inset: 0; background: #f7f5f1; opacity: {{ dC.tint }}; transition: opacity 240ms ease; mix-blend-mode: soft-light;"></div>
+            <div style="position: absolute; left: 11%; right: 11%; top: 9%; pointer-events: none;">
+              <span style="display: block; font-size: max(11px, 1.3cqh); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(247,245,241,0.9);">{{ ui.doorCue }} →</span>
+            </div>
+          </div>
+          <div style="position: absolute; left: 0; right: 0; top: 0; height: 34%; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none;">
+            <span style="display: block; font-size: max(16px, 4.2cqh); line-height: 1; color: var(--color-accent-700);">{{ dC.num }}</span>
+            <span style="display: block; margin-top: max(4px, 0.9cqh); font-size: max(11px, 2.1cqh); font-weight: 600; line-height: 1.16; letter-spacing: -0.012em; color: var(--color-text);">{{ dC.name }}</span>
+            <span style="display: block; margin-top: max(3px, 0.6cqh); font-size: max(11px, 1.24cqh); letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-600);">{{ dC.count }}</span>
+          </div>
+        </div>
+
+    <div data-ghost="true" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">{{ ghosts }}</div>
+      <div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.cloud }}; background-size: 640px 640px; opacity: {{ paper.cloudOp }}; mix-blend-mode: soft-light;"></div>
+      <div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div>
+    </div>
+    <button onClick="{{ goEntrance }}" style="position: absolute; left: max(12px, 1.5cqh); top: max(10px, 1.3cqh); z-index: 20; background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.3cqh); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);" style-hover="color: var(--color-accent-700);">← {{ ui.backToEntrance }}</button>
+    <button onClick="{{ goEntrance }}" style="position: absolute; left: 50%; top: max(10px, 1.3cqh); transform: translateX(-50%); z-index: 20; background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; font-size: max(10px, 1.15cqh); font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(96,93,93,0.9); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);" style-hover="opacity: 0.7;">{{ ui.museumMark }}</button>
+    <div style="position: absolute; right: max(12px, 1.5cqh); top: max(10px, 1.3cqh); z-index: 20; display: flex; align-items: baseline; gap: max(6px, 0.8cqh);">
+      <button onClick="{{ setEn }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.25cqh); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ enOp }};" style-hover="opacity: 1;">EN</button>
+      <span style="font-size: max(11px, 1.25cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: 0.45;">/</span>
+      <button onClick="{{ setZh }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.35cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ zhOp }};" style-hover="opacity: 1;">中文</button>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isHall }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="{{ hall.label }}" style="width: 100%; overflow: hidden; background: var(--color-bg);">
+  <div data-scene="true" style="position: relative; container-type: size;">
+    <div data-scene-art="true" style="position: absolute; inset: 0; container-type: size; overflow: hidden; background-color: #b3bba1; background-image: {{ hallBg }}; background-size: 100% 100%; background-repeat: no-repeat; transform: {{ sceneT }}; transform-origin: {{ sceneO }}; opacity: {{ sceneOp }}; transition: transform 640ms cubic-bezier(0.42, 0, 0.2, 1), opacity 300ms ease 340ms;">
+      <div role="button" tabindex="0" onClick="{{ wL.go }}" onKeyDown="{{ wL.key }}" onMouseEnter="{{ wL.enter }}" onMouseLeave="{{ wL.leave }}" onFocus="{{ wL.enter }}" onBlur="{{ wL.leave }}" aria-label="{{ wL.aria }}" style="position: absolute; left: 0; top: 0; width: 30.2%; height: 100%; cursor: pointer;">
+        <div style="position: absolute; inset: 0; clip-path: polygon(0% 1.72%, 100% 17.43%, 100% 73.73%, 0% 83.13%); background: #f7f5f1; opacity: {{ wL.tint }}; transition: opacity 240ms ease; pointer-events: none; mix-blend-mode: soft-light;"></div>
+        <div style="position: absolute; inset: 0;">
+          <div style="position: absolute; left: 12%; bottom: 66%; width: 76%; pointer-events: none; transform: skewY(8.7deg);">
+            <span style="display: block; font-size: max(11px, 1.24cqh); letter-spacing: 0.2em; text-transform: uppercase; color: {{ wL.inkDim }};">{{ wL.num }} · {{ wL.year }}</span>
+            <span style="display: block; margin: max(2px, 0.62cqh) 0 max(3px, 0.82cqh); font-size: max(11px, 2.95cqh); font-weight: 600; line-height: 1.14; letter-spacing: -0.012em; color: {{ wL.ink }};">{{ wL.title }}</span>
+            <span style="display: block; margin-bottom: max(3px, 0.82cqh); font-size: max(11px, 1.36cqh); line-height: 1.42; letter-spacing: 0; text-transform: none; text-wrap: pretty; color: {{ wL.inkDim }};">{{ wL.tagline }}</span>
+            <span style="display: block; font-size: max(11px, 1.24cqh); letter-spacing: 0.14em; text-transform: uppercase; color: {{ wL.cue }};">{{ ui.cue }} →</span>
+          </div>
+        </div>
+      </div>
+
+      <div role="button" tabindex="0" onClick="{{ wR.go }}" onKeyDown="{{ wR.key }}" onMouseEnter="{{ wR.enter }}" onMouseLeave="{{ wR.leave }}" onFocus="{{ wR.enter }}" onBlur="{{ wR.leave }}" aria-label="{{ wR.aria }}" style="position: absolute; right: 0; top: 0; width: 28.5%; height: 100%; cursor: pointer;">
+        <div style="position: absolute; inset: 0; clip-path: polygon(0% 19.35%, 100% 3.62%, 100% 81.93%, 0% 72.52%); background: #f7f5f1; opacity: {{ wR.tint }}; transition: opacity 240ms ease; pointer-events: none; mix-blend-mode: soft-light;"></div>
+        <div style="position: absolute; inset: 0;">
+          <div style="position: absolute; left: 15%; bottom: 65%; width: 70%; pointer-events: none; transform: skewY(-9.1deg);">
+            <span style="display: block; font-size: max(11px, 1.24cqh); letter-spacing: 0.2em; text-transform: uppercase; color: {{ wR.inkDim }};">{{ wR.num }} · {{ wR.year }}</span>
+            <span style="display: block; margin: max(2px, 0.62cqh) 0 max(3px, 0.82cqh); font-size: max(11px, 2.95cqh); font-weight: 600; line-height: 1.14; letter-spacing: -0.012em; color: {{ wR.ink }};">{{ wR.title }}</span>
+            <span style="display: block; margin-bottom: max(3px, 0.82cqh); font-size: max(11px, 1.36cqh); line-height: 1.42; letter-spacing: 0; text-transform: none; text-wrap: pretty; color: {{ wR.inkDim }};">{{ wR.tagline }}</span>
+            <span style="display: block; font-size: max(11px, 1.24cqh); letter-spacing: 0.14em; text-transform: uppercase; color: {{ wR.cue }};">{{ ui.cue }} →</span>
+          </div>
+        </div>
+      </div>
+
+      <div role="button" tabindex="0" onClick="{{ wC.go }}" onKeyDown="{{ wC.key }}" onMouseEnter="{{ wC.enter }}" onMouseLeave="{{ wC.leave }}" onFocus="{{ wC.enter }}" onBlur="{{ wC.leave }}" aria-label="{{ wC.aria }}" style="position: absolute; left: 30.2%; width: 41.3%; top: 0%; height: 82%; cursor: pointer;">
+        <div style="position: absolute; left: 0; right: 0; top: {{ wC.cTop }}; bottom: {{ wC.cBot }}; background: #f7f5f1; opacity: {{ wC.tint }}; transition: opacity 240ms ease; pointer-events: none; mix-blend-mode: soft-light;"></div>
+          <div style="position: absolute; left: 11%; top: {{ wC.cLabel }}; width: 52%; pointer-events: none;">
+            <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 max(6px, 0.9cqh); font-size: max(10px, 1.2cqh); line-height: 1.3; letter-spacing: 0.18em; text-transform: uppercase; color: {{ wC.inkDim }};">{{ wC.num }} · {{ wC.year }}<span style="letter-spacing: 0.14em; color: {{ wC.cue }};">{{ ui.cue }} →</span></span>
+            <span style="display: block; margin: max(2px, 0.45cqh) 0 max(2px, 0.5cqh); font-size: max(13px, 2.6cqh); font-weight: 600; line-height: 1.1; letter-spacing: -0.012em; color: {{ wC.ink }};">{{ wC.title }}</span>
+            <span style="display: block; font-size: max(10px, 1.22cqh); line-height: 1.32; letter-spacing: 0; text-transform: none; text-wrap: pretty; color: {{ wC.inkDim }};">{{ wC.tagline }}</span>
+          </div>
+      </div>
+
+      <div data-figures="true" style="position: absolute; inset: 0; pointer-events: none;">{{ figureParts }}</div>
+      <div data-ghost="true" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">{{ ghosts }}</div>
+    </div>
+    <button onClick="{{ goConcourse }}" style="position: absolute; left: max(12px, 1.5cqh); top: max(10px, 1.3cqh); z-index: 20; background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.3cqh); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);" style-hover="color: var(--color-accent-700);">← {{ ui.backToConcourse }}</button>
+    <button onClick="{{ goEntrance }}" style="position: absolute; left: 50%; top: max(10px, 1.3cqh); transform: translateX(-50%); z-index: 20; background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; font-size: max(10px, 1.15cqh); font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(96,93,93,0.9); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);" style-hover="opacity: 0.7;">{{ ui.museumMark }}</button>
+    <div style="position: absolute; right: max(12px, 1.5cqh); top: max(10px, 1.3cqh); z-index: 20; display: flex; align-items: baseline; gap: max(6px, 0.8cqh);">
+      <button onClick="{{ setEn }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.25cqh); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ enOp }};" style-hover="opacity: 1;">EN</button>
+      <span style="font-size: max(11px, 1.25cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: 0.45;">/</span>
+      <button onClick="{{ setZh }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.35cqh); color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95); opacity: {{ zhOp }};" style-hover="opacity: 1;">中文</button>
+    </div>
+
+    <div style="position: absolute; left: max(12px, 1.5cqh); bottom: max(12px, 1.5cqh); z-index: 20; max-width: min(44ch, 54%); pointer-events: none;">
+      <span style="display: block; font-size: max(11px, 1.2cqh); letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent-800); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);">{{ ui.hallOf }} {{ hall.num }}</span>
+      <span style="display: block; margin: max(2px, 0.4cqh) 0 max(3px, 0.5cqh); font-size: max(15px, 2.5cqh); font-weight: 600; line-height: 1.1; letter-spacing: -0.015em; color: var(--color-text); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);">{{ hall.name }}</span>
+      <span style="display: block; font-size: max(11px, 1.4cqh); line-height: 1.45; color: var(--color-neutral-900); text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);">{{ hall.note }}</span>
+    </div>
+
+    <nav style="position: absolute; right: max(12px, 1.5cqh); bottom: max(12px, 1.5cqh); z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: max(6px, 0.85cqh); max-width: min(30ch, 32%); text-align: right;">
+      <sc-for list="{{ halls }}" as="h" hint-placeholder-count="3">
+        <button onClick="{{ h.go }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: max(11px, 1.35cqh); line-height: 1.35; letter-spacing: 0.12em; text-transform: uppercase; text-align: right; color: {{ h.color }}; font-weight: {{ h.weight }}; text-shadow: 0 0 7px rgba(243,242,242,0.92), 0 1px 2px rgba(243,242,242,0.95);" style-hover="color: var(--color-accent-700);">{{ h.num }} · {{ h.name }}</button>
+      </sc-for>
+    </nav>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
+<header style="position: sticky; top: 0; z-index: 40; background: {{ pageBg }};">
+  <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; gap: clamp(12px, 2vw, 24px); padding: 15px clamp(16px, 3vw, 48px) 9px;">
+    <button onClick="{{ backToHall }}" style="background: none; border: 0; padding: 0; cursor: pointer; justify-self: start; text-align: left; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700);" style-hover="color: var(--color-accent-700);">← {{ ui.backToHallShort }}</button>
+    <button onClick="{{ goEntrance }}" style="background: none; border: 0; padding: 0; cursor: pointer; justify-self: center; white-space: nowrap; font-size: 11px; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; color: var(--color-neutral-500);" style-hover="color: var(--color-neutral-700);">{{ ui.museumMark }}</button>
+    <div style="display: flex; align-items: baseline; justify-content: flex-end; gap: clamp(14px, 2vw, 26px); justify-self: end;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-neutral-700);">{{ crumb }}</span>
+      <span style="display: flex; align-items: baseline; gap: 8px;">
+        <button onClick="{{ setEn }}" style="background: none; border: 0; padding: 2px 0; cursor: pointer; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: {{ enColor }}; border-bottom: 1px solid {{ enRule }};" style-hover="color: var(--color-accent-700);">EN</button>
+        <span style="color: var(--color-neutral-400); font-size: 12px;">/</span>
+        <button onClick="{{ setZh }}" style="background: none; border: 0; padding: 2px 0; cursor: pointer; font-size: 13px; color: {{ zhColor }}; border-bottom: 1px solid {{ zhRule }};" style-hover="color: var(--color-accent-700);">中文</button>
+      </span>
+    </div>
+  </div>
+  <div style="height: 3px; background: var(--color-text);"></div>
+  <div style="height: 1px; background: var(--color-text); margin-top: 2px;"></div>
+</header>
+</sc-if>
+
+<sc-if value="{{ isLanding }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="{{ p.label }}" style="position: relative; min-height: 100vh; background: {{ pageBg }}; --color-neutral-600: #605d5d; --color-neutral-700: #4c4949;">
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: -1; background-image: {{ paper.cloud }}; background-size: 640px 640px; opacity: {{ paper.pageCloudOp }}; mix-blend-mode: soft-light;"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: -1; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div>
+  <div style="position: relative; height: clamp(58px, 10vh, 116px); background: {{ p.plate }}; display: flex; align-items: flex-end;"><div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div>
+    <span style="padding: 0 clamp(16px, 3vw, 48px) 13px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: {{ p.plateText }};">{{ p.num }} &nbsp;·&nbsp; {{ p.hallName }}</span>
+  </div>
+  <div style="max-width: 1240px; padding: clamp(30px, 5vw, 66px) clamp(16px, 3vw, 48px) clamp(50px, 8vw, 104px);">
+    <p style="margin: 0 0 clamp(14px, 2vw, 22px); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent-700);">{{ p.kicker }}</p>
+    <h1 style="margin: 0 0 clamp(16px, 2.4vw, 26px); font-size: clamp(36px, 6.4vw, 78px); line-height: 1.03; letter-spacing: -0.025em;">{{ p.title }}</h1>
+    <p style="margin: 0 0 clamp(28px, 4vw, 46px); font-size: clamp(19px, 2.2vw, 27px); line-height: 1.48; max-width: 30em; color: var(--color-neutral-900);">{{ p.standfirst }}</p>
+
+    <figure style="margin: 0 0 clamp(30px, 4vw, 52px);">
+      <sc-if value="{{ p.hero.src }}" hint-placeholder-val="{{ false }}">
+        <div class="{{ p.hero.cls }}" onClick="{{ p.hero.zoom }}" style="cursor: zoom-in; overflow: hidden; background: var(--color-surface);">
+          <div role="button" tabindex="0" onKeyDown="{{ p.hero.key }}" aria-label="{{ p.hero.zoomLabel }}" style="width: 100%; aspect-ratio: {{ p.hero.ratio }}; background-color: var(--color-surface); background-image: {{ p.hero.bg }}; background-size: {{ p.hero.fit }}; background-position: {{ p.hero.pos }}; background-repeat: no-repeat; transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);" style-hover="transform: scale(1.03);"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ p.hero.ph }}" hint-placeholder-val="{{ true }}">
+        <div style="aspect-ratio: {{ p.hero.ratio }}; background: repeating-linear-gradient(135deg, var(--color-neutral-200) 0 7px, var(--color-neutral-100) 7px 14px); display: flex; align-items: center; justify-content: center; padding: 24px;">
+          <span style="font: 400 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-neutral-600); text-align: center; max-width: 34em;">{{ p.hero.ph }}</span>
+        </div>
+      </sc-if>
+      <figcaption style="margin-top: 11px; font-size: 13px; font-style: {{ it }}; color: var(--color-neutral-700);">{{ p.hero.caption }}</figcaption>
+    </figure>
+
+    <button onClick="{{ goCase }}" class="btn btn-primary" style="cursor: pointer; font-size: clamp(15px, 1.6vw, 18px); padding: 13px 30px; transition: background-color 200ms ease, transform 200ms cubic-bezier(0.22, 0.61, 0.36, 1);" style-hover="background-color: var(--color-accent-800); transform: scale(1.05);">{{ ui.enterCase }} →</button>
+    <p style="margin: 12px 0 0; font-size: 13px; color: var(--color-neutral-600);">{{ ui.enterCaseNote }}</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: clamp(20px, 3vw, 40px) clamp(24px, 4vw, 56px); margin-top: clamp(48px, 7vw, 88px); max-width: 1000px;">
+      <div>
+        <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 7px;">{{ ui.role }}</span>
+        <span style="display: block; font-size: 16px; line-height: 1.5;">{{ p.role }}</span>
+      </div>
+      <div>
+        <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 7px;">{{ ui.year }}</span>
+        <span style="display: block; font-size: 16px; line-height: 1.5;">{{ p.year }}</span>
+      </div>
+      <div>
+        <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 7px;">{{ ui.collab }}</span>
+        <span style="display: block; font-size: 16px; line-height: 1.5;">{{ p.collab }}</span>
+      </div>
+      <div>
+        <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 7px;">{{ ui.methods }}</span>
+        <sc-for list="{{ p.methods }}" as="m" hint-placeholder-count="3">
+          <span style="display: block; font-size: 16px; line-height: 1.5;">{{ m }}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: clamp(20px, 3vw, 44px); margin-top: clamp(40px, 6vw, 72px); max-width: 1000px;">
+      <sc-for list="{{ p.results }}" as="r" hint-placeholder-count="3">
+        <p style="margin: 0; font-size: 17px; line-height: 1.55; color: var(--color-neutral-900);">{{ r }}</p>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: clamp(48px, 7vw, 90px);">
+      <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 16px;">{{ ui.contents }}</span>
+      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="6">
+        <button onClick="{{ s.goFromLanding }}" style="display: block; width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; font-size: clamp(16px, 1.8vw, 19px); line-height: 1.9; color: var(--color-neutral-800);" style-hover="color: var(--color-accent-700);">{{ s.n }} &nbsp; {{ s.label }}</button>
+      </sc-for>
+    </div>
+
+    <nav style="display: flex; gap: clamp(18px, 3vw, 34px); margin-top: clamp(44px, 6vw, 76px); flex-wrap: wrap;">
+      <button onClick="{{ backToHall }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700);" style-hover="color: var(--color-accent-800);">← {{ ui.backToHall }}</button>
+      <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ prev.go }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700);" style-hover="color: var(--color-accent-700);">← {{ prev.title }}</button>
+      </sc-if>
+      <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ next.go }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700);" style-hover="color: var(--color-accent-700);">{{ next.title }} →</button>
+      </sc-if>
+    </nav>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isCase }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="{{ p.caseLabel }}" style="position: relative; min-height: 100vh; background: {{ pageBg }}; --color-neutral-600: #605d5d; --color-neutral-700: #4c4949;">
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: -1; background-image: {{ paper.cloud }}; background-size: 640px 640px; opacity: {{ paper.pageCloudOp }}; mix-blend-mode: soft-light;"></div>
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: -1; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div>
+  <div style="position: relative; height: clamp(30px, 5vh, 56px); background: {{ p.plate }};"><div style="position: absolute; inset: 0; pointer-events: none; background-image: {{ paper.grain }}; background-size: 190px 190px; opacity: {{ paper.grainOp }}; mix-blend-mode: multiply;"></div></div>
+  <div style="max-width: 1240px; padding: clamp(28px, 4.5vw, 60px) clamp(16px, 3vw, 48px) 0;">
+    <p style="margin: 0 0 clamp(12px, 2vw, 20px); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent-700);">{{ p.num }} &nbsp;·&nbsp; {{ p.kicker }}</p>
+    <h1 style="margin: 0 0 14px; font-size: clamp(32px, 5.6vw, 66px); line-height: 1.04; letter-spacing: -0.025em;">{{ p.title }}</h1>
+    <p style="margin: 0; font-size: clamp(18px, 2vw, 24px); line-height: 1.5; max-width: 30em; color: var(--color-neutral-900);">{{ p.standfirst }}</p>
+  </div>
+
+  <div style="max-width: 1240px; padding: 0 clamp(16px, 3vw, 48px) clamp(50px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: flex-start; gap: clamp(26px, 4vw, 60px);">
+    <aside data-toc="true" style="flex: 1 1 180px; max-width: 250px; min-width: 0; position: sticky; top: clamp(56px, 8vh, 78px); padding-top: clamp(44px, 7vw, 96px);">
+      <span style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 14px;">{{ ui.contents }}</span>
+      <nav style="display: flex; flex-direction: column; gap: 2px;">
+        <sc-for list="{{ sections }}" as="s" hint-placeholder-count="6">
+          <button onClick="{{ s.go }}" aria-current="{{ s.current }}" style="display: grid; grid-template-columns: 1.15em 12px minmax(0, 1fr); align-items: baseline; gap: 7px; width: 100%; text-align: left; background: none; border: 0; padding: 6px 0; cursor: pointer; font-size: 13px; line-height: 1.4; color: {{ s.navColor }}; font-weight: {{ s.navWeight }};" style-hover="color: var(--color-accent-700);">
+            <span style="font-size: 10px; letter-spacing: 0.08em; color: var(--color-neutral-700);">{{ s.n }}</span>
+            <span style="align-self: center; height: 1px; background: var(--color-accent-700); opacity: {{ s.barOp }}; transition: opacity 180ms ease;"></span>
+            <span>{{ s.label }}</span>
+          </button>
+        </sc-for>
+      </nav>
+    </aside>
+
+    <div style="flex: 999 1 min(100%, 33em); min-width: 0;">
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="6">
+      <article id="{{ s.id }}" data-sec="{{ s.id }}" style="padding-top: clamp(44px, 7vw, 96px); scroll-margin-top: 96px;">
+        <span style="display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-accent-700); margin-bottom: 12px;">{{ s.n }} &nbsp;·&nbsp; {{ s.label }}</span>
+        <h2 style="margin: 0 0 clamp(14px, 2vw, 20px); font-size: clamp(26px, 4.2vw, 46px); line-height: 1.08; letter-spacing: -0.02em; max-width: 24em;">{{ s.heading }}</h2>
+        <sc-if value="{{ s.hasLede }}" hint-placeholder-val="{{ true }}">
+          <p style="margin: 0 0 clamp(16px, 2.4vw, 24px); font-size: clamp(18px, 2.1vw, 25px); line-height: 1.45; font-style: {{ it }}; max-width: 29em; color: var(--color-text);">{{ s.lede }}</p>
+        </sc-if>
+        <p style="margin: 0; font-size: clamp(16px, 1.5vw, 18px); line-height: 1.72; max-width: 35em; color: var(--color-neutral-900);">{{ s.body }}</p>
+        <sc-if value="{{ s.hasSlides }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: clamp(22px, 3.4vw, 38px);">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 10px;">
+              <span style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-700);">{{ ui.slidesFrom }} &nbsp;·&nbsp; {{ s.slideN }} {{ ui.slideCount }}</span>
+              <sc-if value="{{ s.carousel }}" hint-placeholder-val="{{ true }}">
+                <span style="display: flex; gap: 8px;">
+                  <button onClick="{{ s.prev }}" aria-label="{{ ui.prevSlide }}" style="background: none; border: 1px solid var(--color-neutral-300); border-radius: 2px; width: 30px; height: 26px; cursor: pointer; font-size: 13px; line-height: 1; color: var(--color-text);" style-hover="border-color: var(--color-accent-700); color: var(--color-accent-700);">←</button>
+                  <button onClick="{{ s.next }}" aria-label="{{ ui.nextSlide }}" style="background: none; border: 1px solid var(--color-neutral-300); border-radius: 2px; width: 30px; height: 26px; cursor: pointer; font-size: 13px; line-height: 1; color: var(--color-text);" style-hover="border-color: var(--color-accent-700); color: var(--color-accent-700);">→</button>
+                </span>
+              </sc-if>
+            </div>
+            <sc-if value="{{ s.carousel }}" hint-placeholder-val="{{ true }}">
+              <div id="{{ s.railId }}" style="display: flex; gap: 14px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; padding: 10px; background: var(--color-surface);">
+                <sc-for list="{{ s.slides }}" as="sl" hint-placeholder-count="0">
+                  <button onClick="{{ sl.zoom }}" aria-label="{{ sl.zoomLabel }}" style="flex: 0 0 auto; scroll-snap-align: center; display: block; padding: 0; border: 0; background: #ffffff; cursor: zoom-in;" style-hover="outline: 1px solid var(--color-accent-700); outline-offset: 2px;">
+                    <sc-if value="{{ sl.framed }}" hint-placeholder-val="{{ false }}">
+                      <span style="display: block; height: clamp(300px, 56vh, 640px); aspect-ratio: 16 / 9; background: #ffffff;">
+                        <img src="{{ sl.src }}" alt="{{ sl.alt }}" loading="lazy" style="display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%;" />
+                      </span>
+                    </sc-if>
+                    <sc-if value="{{ sl.plain }}" hint-placeholder-val="{{ true }}">
+                      <img src="{{ sl.src }}" alt="{{ sl.alt }}" loading="lazy" style="display: block; width: auto; height: auto; max-height: clamp(300px, 56vh, 640px); background: #ffffff;" />
+                    </sc-if>
+                  </button>
+                </sc-for>
+              </div>
+              <span style="display: block; margin-top: 8px; font-size: 12px; color: var(--color-neutral-600);">{{ ui.swipeHint }} &nbsp;·&nbsp; {{ ui.clickToEnlarge }}</span>
+            </sc-if>
+            <sc-if value="{{ s.stack }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 14px; padding: 10px; background: var(--color-surface);">
+                <sc-for list="{{ s.slides }}" as="sl" hint-placeholder-count="0">
+                  <button onClick="{{ sl.zoom }}" aria-label="{{ sl.zoomLabel }}" style="display: block; width: 100%; padding: 0; border: 0; background: #ffffff; cursor: zoom-in;" style-hover="outline: 1px solid var(--color-accent-700); outline-offset: 2px;">
+                    <img src="{{ sl.src }}" alt="{{ sl.alt }}" loading="lazy" style="display: block; width: 100%; height: auto; background: #ffffff;" />
+                  </button>
+                </sc-for>
+              </div>
+              <span style="display: block; margin-top: 8px; font-size: 12px; color: var(--color-neutral-600);">{{ ui.clickToEnlarge }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ s.hasVideo }}" hint-placeholder-val="{{ false }}">
+          <figure style="margin: clamp(22px, 3.4vw, 38px) 0 0;">
+            <figcaption style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 8px;">{{ ui.filmFrom }}</figcaption>
+            <video src="{{ s.videoSrc }}" poster="{{ s.videoPoster }}" controls="controls" preload="none" playsinline="playsinline" style="display: block; width: 100%; height: auto; background: var(--color-text);"></video>
+            <figcaption style="margin-top: 10px; font-size: 13px; font-style: {{ it }}; line-height: 1.5; color: var(--color-neutral-700);">{{ s.videoCaption }}</figcaption>
+          </figure>
+        </sc-if>
+        <sc-if value="{{ s.hasCode }}" hint-placeholder-val="{{ false }}">
+          <figure style="margin: clamp(20px, 3vw, 32px) 0 0;">
+            <figcaption style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 8px;">{{ ui.codeFrom }} &nbsp;·&nbsp; {{ s.codeLabel }}</figcaption>
+            <pre style="margin: 0; padding: clamp(14px, 2vw, 20px); background: var(--color-surface); overflow-x: auto; font: 400 13px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--color-neutral-900);">{{ s.codeText }}</pre>
+          </figure>
+        </sc-if>
+        <sc-if value="{{ s.hasImages }}" hint-placeholder-val="{{ true }}">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: clamp(20px, 3vw, 40px); margin-top: clamp(26px, 4vw, 46px);">
+            <sc-for list="{{ s.images }}" as="im" hint-placeholder-count="2">
+              <figure style="margin: 0;">
+                <sc-if value="{{ im.src }}" hint-placeholder-val="{{ false }}">
+                  <div class="{{ im.cls }}" onClick="{{ im.zoom }}" style="cursor: zoom-in; overflow: hidden; background: var(--color-surface);">
+                    <div role="button" tabindex="0" onKeyDown="{{ im.key }}" aria-label="{{ im.zoomLabel }}" style="width: 100%; aspect-ratio: {{ im.ratio }}; background-color: var(--color-surface); background-image: {{ im.bg }}; background-size: {{ im.fit }}; background-position: {{ im.pos }}; background-repeat: no-repeat; transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);" style-hover="transform: scale(1.03);"></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ im.ph }}" hint-placeholder-val="{{ true }}">
+                  <div style="aspect-ratio: {{ im.ratio }}; background: repeating-linear-gradient(135deg, var(--color-neutral-200) 0 7px, var(--color-neutral-100) 7px 14px); display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <span style="font: 400 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-neutral-600); text-align: center;">{{ im.ph }}</span>
+                  </div>
+                </sc-if>
+                <figcaption style="margin-top: 10px; font-size: 13px; font-style: {{ it }}; line-height: 1.5; color: var(--color-neutral-700);">{{ im.caption }}</figcaption>
+              </figure>
+            </sc-for>
+          </div>
+        </sc-if>
+      </article>
+    </sc-for>
+
+    <div style="padding-top: clamp(44px, 7vw, 96px);">
+      <span style="display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 18px;">{{ ui.results }}</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: clamp(20px, 3vw, 44px); max-width: 1000px;">
+        <sc-for list="{{ p.results }}" as="r" hint-placeholder-count="3">
+          <p style="margin: 0; font-size: 17px; line-height: 1.55; color: var(--color-neutral-900);">{{ r }}</p>
+        </sc-for>
+      </div>
+    </div>
+
+    <nav style="display: flex; gap: clamp(18px, 3vw, 34px); margin-top: clamp(48px, 7vw, 88px); flex-wrap: wrap;">
+      <button onClick="{{ backToHall }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700);" style-hover="color: var(--color-accent-800);">← {{ ui.backToHall }}</button>
+      <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ next.goCase }}" style="background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700);" style-hover="color: var(--color-accent-700);">{{ ui.nextWork }}: {{ next.title }} →</button>
+      </sc-if>
+    </nav>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ hasLightbox }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="{{ ui.fullSize }}" onClick="{{ closeLightbox }}" style="position: fixed; inset: 0; z-index: 90; background: rgba(32, 30, 29, 0.86); overflow: auto; cursor: zoom-out; display: grid; place-items: center; padding: clamp(40px, 6vw, 72px) clamp(12px, 3vw, 40px);">
+    <sc-if value="{{ lightbox }}" hint-placeholder-val="{{ false }}">
+      <div role="img" aria-label="{{ lightboxAlt }}" style="width: 75vw; height: 75vh; background-image: {{ lightboxBg }}; background-size: contain; background-position: 50% 50%; background-repeat: no-repeat;"></div>
+    </sc-if>
+    <button onClick="{{ closeLightbox }}" aria-label="{{ ui.closeFull }}" style="position: fixed; top: 16px; right: 18px; background: none; border: 1px solid rgba(247,245,241,0.5); border-radius: 2px; padding: 6px 13px; cursor: pointer; font: 400 11px/1 inherit; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(247,245,241,0.92);" style-hover="border-color: rgba(247,245,241,0.95);">{{ ui.closeFull }} ✕</button>
+  </div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;ghostVisitors&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Gallery&quot;},&quot;figureMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Gallery&quot;},&quot;wallTexture&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;gouache&quot;,&quot;paper&quot;,&quot;flat&quot;],&quot;default&quot;:&quot;gouache&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Gallery&quot;},&quot;startLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;zh&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Gallery&quot;}}">
+class Component extends DCLogic {
+  nat = {};
+
+  state = { lightbox: null, lightboxAlt: "", lang: null, view: "entrance", hallId: "research", projectId: null, zoom: null, data: null, hover: null, active: null };
+
+  _gEl = [];
+  _gBody = [];
+  _ghosts = [0, 1, 2, 3, 4, 5, 6].map(i => ({
+    x: -20 - i * 18, dir: 1, d: 0, speed: 2, step: 1.3, pause: 0, stop: null, alpha: 0.42, seeded: false,
+  }));
+
+  // Scene-specific stage: how big a visitor is and how deep the floor runs.
+  static SCENES = {
+    hall: { near: 3.5, far: 1.3, bNear: 15, bFar: 24, spots: [12, 20, 40, 50, 60, 82, 90] },
+    concourse: { near: 2.7, far: 1.2, bNear: 4, bFar: 18, spots: [21.5, 50, 78.5] },
+    entrance: { near: 2.5, far: 1.1, bNear: 6, bFar: 22, spots: [30, 50, 70] },
+  };
+
+  measure(srcs) {
+    srcs.forEach(src => {
+      if (!src || this.nat[src] !== undefined) return;
+      this.nat[src] = null;
+      const im = new Image();
+      im.onload = () => {
+        if (!im.naturalWidth || !im.naturalHeight) return;
+        this.nat[src] = im.naturalWidth + " / " + im.naturalHeight;
+        clearTimeout(this._nt);
+        this._nt = setTimeout(() => this.forceUpdate(), 60);
+      };
+      im.src = src;
+    });
+  }
+
+  onEsc = e => {
+    if (e.key === "Escape" && this.state.lightbox) this.setState({ lightbox: null, lightboxAlt: "" });
+  };
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.onEsc);
+    if (window.MUSEUM_CONTENT) this.setState({ data: window.MUSEUM_CONTENT });
+    else import("./museum-content.js")
+      .then(m => this.setState({ data: m.CONTENT || window.MUSEUM_CONTENT }))
+      .catch(err => console.error("museum content failed to load", err));
+    this._ghosts.forEach(g => this.seed(g, true));
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    window.addEventListener("resize", this.onScroll, { passive: true });
+    const reduce = typeof window !== "undefined" && window.matchMedia
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) {
+      this._last = 0;
+      this._raf = requestAnimationFrame(this.frame);
+    } else {
+      this.paint(0);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onEsc);
+    this.stopFix();
+    window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("resize", this.onScroll);
+    if (this._sr) cancelAnimationFrame(this._sr);
+    clearTimeout(this._z);
+    clearTimeout(this._gt);
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+
+  scene() { return Component.SCENES[this.state.view] || Component.SCENES.hall; }
+
+  railScroll(sid, dir) {
+    const el = document.getElementById("rail-" + sid);
+    if (!el) return;
+    const first = el.firstElementChild;
+    const step = first ? first.getBoundingClientRect().width + 14 : el.clientWidth * 0.85;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  }
+
+  jump(id, smooth) {
+    const el = typeof document !== "undefined" && document.getElementById(id);
+    if (!el) return false;
+    const to = () => Math.max(0, el.getBoundingClientRect().top + window.scrollY - 88);
+    window.scrollTo({ top: to(), behavior: smooth ? "smooth" : "auto" });
+    this.setState({ active: id });
+    // A freshly mounted case page is still settling (webfonts, print plates),
+    // so re-assert the position until it stops moving — but never fight the user.
+    if (!smooth) {
+      this.stopFix();
+      let n = 0;
+      this._fix = setInterval(() => {
+        const y = to();
+        if (Math.abs(y - window.scrollY) > 2) window.scrollTo({ top: y, behavior: "auto" });
+        if (++n > 12) this.stopFix();
+      }, 60);
+      ["wheel", "touchstart", "keydown", "pointerdown"].forEach(ev =>
+        window.addEventListener(ev, this.stopFix, { passive: true, once: true }));
+    }
+    return true;
+  }
+
+  stopFix = () => {
+    clearInterval(this._fix);
+    this._fix = null;
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach(ev =>
+      window.removeEventListener(ev, this.stopFix));
+  };
+
+  onScroll = () => {
+    if (this._sr) return;
+    this._sr = requestAnimationFrame(() => {
+      this._sr = null;
+      if (this.state.view !== "case") return;
+      const els = Array.prototype.slice.call(document.querySelectorAll("[data-sec]"));
+      if (!els.length) return;
+      let cur = els[0].getAttribute("data-sec");
+      els.forEach(el => { if (el.getBoundingClientRect().top <= 140) cur = el.getAttribute("data-sec"); });
+      if (cur !== this.state.active) this.setState({ active: cur });
+    });
+  };
+
+  componentDidUpdate(prev) {
+    if (this._pending && this.state.view === "case") {
+      const id = this._pending;
+      if (this.jump(id)) this._pending = null;
+    } else if (this.state.view === "case" && prev.view !== "case" && !this.state.active) {
+      const first = document.querySelector("[data-sec]");
+      if (first) this.setState({ active: first.getAttribute("data-sec") });
+    }
+  }
+
+  seed(g, spread) {
+    const rnd = Math.random();
+    g.dir = rnd < 0.5 ? 1 : -1;
+    g.d = Math.random();
+    g.speed = 2.6 - g.d * 1.3;
+    g.step = 1.05 + g.d * 0.55;
+    g.alpha = 0.5 - g.d * 0.16;
+    g.pause = 0;
+    g.group = null;
+    g.x = spread ? Math.random() * 100 : (g.dir > 0 ? -7 : 107);
+    g.stop = this.pickStop(g);
+  }
+
+  pickStop(g) {
+    if (Math.random() > 0.62) return null;
+    const spots = this.scene().spots;
+    const ahead = spots.filter(s => (s - g.x) * g.dir > 6);
+    if (!ahead.length) return null;
+    return ahead[Math.floor(Math.random() * ahead.length)] + (Math.random() - 0.5) * 3;
+  }
+
+  // Every so often, send two or three of them to the same wall.
+  gather() {
+    const spots = this.scene().spots;
+    const spot = spots[Math.floor(Math.random() * spots.length)];
+    const size = Math.random() < 0.45 ? 3 : 2;
+    const pool = this._ghosts.filter(g => g.pause <= 0 && g.x > -5 && g.x < 105);
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    pool.slice(0, size).forEach((g, k) => {
+      g.stop = spot + (k - (size - 1) / 2) * (2.4 + g.d * 1.4);
+      g.dir = g.stop > g.x ? 1 : -1;
+      g.group = 5.5 + Math.random() * 4;
+    });
+  }
+
+  frame = ts => {
+    const dt = this._last ? Math.min(0.05, (ts - this._last) / 1000) : 0.016;
+    this._last = ts;
+    this._gap = (this._gap || 0) - dt;
+    if (this._gap <= 0) { this.gather(); this._gap = 9 + Math.random() * 11; }
+    this._ghosts.forEach(g => {
+      if (g.pause > 0) {
+        g.pause -= dt;
+        if (g.pause <= 0) { g.group = null; g.stop = this.pickStop(g); }
+      } else {
+        g.x += g.dir * g.speed * dt;
+        if (g.stop != null && Math.abs(g.x - g.stop) < 0.7) {
+          g.pause = g.group != null ? g.group : 3 + Math.random() * 6;
+          g.stop = null;
+        }
+        if (g.x < -9 || g.x > 109) this.seed(g, false);
+      }
+    });
+    this.paint(dt);
+    this._raf = requestAnimationFrame(this.frame);
+  };
+
+  paint() {
+    const sc = this.scene();
+    this._ghosts.forEach((g, i) => {
+      const el = this._gEl[i];
+      if (!el) return;
+      const fade = Math.max(0, Math.min(1, (g.x + 7) / 15)) * Math.max(0, Math.min(1, (107 - g.x) / 15));
+      el.style.left = g.x + "%";
+      el.style.bottom = (sc.bNear + g.d * (sc.bFar - sc.bNear)) + "%";
+      el.style.fontSize = "max(2.6px, " + (sc.near + g.d * (sc.far - sc.near)) + "cqh)";
+      el.style.opacity = g.alpha * fade;
+      const body = this._gBody[i];
+      if (body) {
+        const state = g.pause > 0 ? "paused" : "running";
+        body.style.animationPlayState = state;
+        for (let k = 0; k < body.children.length; k++) body.children[k].style.animationPlayState = state;
+        const legs = body.children[2];
+        if (legs) for (let k = 0; k < legs.children.length; k++) legs.children[k].style.animationPlayState = state;
+      }
+    });
+  }
+
+  get lang() { return this.state.lang || (this.props.startLang === "zh" ? "zh" : "en"); }
+
+  t(v) {
+    if (v == null) return "";
+    if (typeof v === "string") return v;
+    return v[this.lang] || v.en || "";
+  }
+
+  go(patch) {
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+    this.setState(patch);
+  }
+
+  walkTo(patch, t, o) {
+    this.setState({ zoom: { t: t, o: o }, hover: null });
+    clearTimeout(this._z);
+    this._z = setTimeout(() => this.go(Object.assign({ zoom: null }, patch)), 620);
+  }
+
+  renderVals() {
+    const st = this.state;
+    const t = v => this.t(v);
+    const d = st.data;
+    const noise = (w, bf, oct, seed) => 'url("data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + w + '">' +
+      '<filter id="n" x="0" y="0" width="100%" height="100%">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="' + bf + '" numOctaves="' + oct + '" seed="' + seed + '"/>' +
+      '<feColorMatrix type="saturate" values="0"/></filter>' +
+      '<rect width="100%" height="100%" filter="url(#n)"/></svg>') + '")';
+    const texKind = this.props.wallTexture || "gouache";
+    const paper = {
+      cloud: noise(640, 0.009, 4, 7),
+      grain: noise(190, 0.62, 2, 3),
+      cloudOp: texKind === "gouache" ? 0.52 : 0,
+      grainOp: texKind === "flat" ? 0 : texKind === "paper" ? 0.2 : 0.3,
+      pageCloudOp: texKind === "gouache" ? 0.34 : 0,
+    };
+    const base = {
+      paper,
+      it: this.lang === "en" ? "italic" : "normal",
+      isEn: this.lang === "en",
+      isZh: this.lang === "zh",
+      enColor: this.lang === "en" ? "var(--color-text)" : "var(--color-neutral-600)",
+      zhColor: this.lang === "zh" ? "var(--color-text)" : "var(--color-neutral-600)",
+      enRule: this.lang === "en" ? "var(--color-text)" : "transparent",
+      zhRule: this.lang === "zh" ? "var(--color-text)" : "transparent",
+      setEn: () => this.setState({ lang: "en" }),
+      setZh: () => this.setState({ lang: "zh" }),
+      isEntrance: st.view === "entrance",
+      isConcourse: st.view === "concourse",
+      isHall: st.view === "hall",
+      isLanding: st.view === "landing",
+      isCase: st.view === "case",
+      isScene: st.view === "entrance" || st.view === "concourse" || st.view === "hall",
+      isPage: st.view === "landing" || st.view === "case",
+      sceneInk: st.view === "hall" ? "rgba(247,245,241,0.95)" : "var(--color-text)",
+      hallBg: "url('img/hall-" + (st.hallId === "research" ? "research" : st.hallId === "commercial" ? "commercial" : "room") + ".jpg')",
+      enOp: this.lang === "en" ? 1 : 0.55,
+      zhOp: this.lang === "zh" ? 1 : 0.55,
+      goEntrance: () => this.go({ view: "entrance", projectId: null, zoom: null, hover: null }),
+      goConcourse: () => this.go({ view: "concourse", projectId: null, zoom: null, hover: null }),
+      enterDoor: () => this.walkTo({ view: "concourse" }, "scale(3.4)", "50% 58%"),
+      enterDoorKey: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.walkTo({ view: "concourse" }, "scale(3.4)", "50% 58%"); } },
+      doorEnter: () => this.setState({ hover: "door" }),
+      doorLeave: () => this.setState({ hover: null }),
+      doorTint: st.hover === "door" ? 0.55 : 0,
+    };
+    if (!d) return Object.assign(base, { ui: {}, halls: [], doors: [], dA: {}, dB: {}, dC: {}, sections: [], crumb: "" });
+
+    const UI = {};
+    Object.keys(d.UI).forEach(k => { UI[k] = t(d.UI[k]); });
+    const P = d.PROJECTS;
+
+    const halls = d.HALLS.map(h => ({
+      id: h.id,
+      num: h.num,
+      name: t(h.name),
+      note: t(h.note),
+      count: h.projects.length + " " + UI.works,
+      enterLabel: UI.enterHall,
+      aria: UI.enterHall + ": " + t(h.name),
+      color: h.id === st.hallId && st.view === "hall" ? "var(--color-accent-800)" : "var(--color-text)",
+      weight: h.id === st.hallId && st.view === "hall" ? 600 : 400,
+      go: () => this.go({ view: "hall", hallId: h.id, zoom: null, hover: null }),
+    }));
+
+    const DOOR_X = { 0: "21.5%", 1: "50%", 2: "78.5%" };
+    const doors = d.HALLS.map((h, i) => ({
+      num: h.num,
+      name: t(h.name),
+      count: h.projects.length + " " + UI.works,
+      aria: t(h.name) + " — " + UI.doorCue,
+      tint: st.hover === "door" + i ? 0.5 : 0,
+      enter: () => this.setState({ hover: "door" + i }),
+      leave: () => this.setState({ hover: null }),
+      go: () => this.walkTo({ view: "hall", hallId: h.id }, "scale(3)", DOOR_X[i] + " 62%"),
+      key: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.walkTo({ view: "hall", hallId: h.id }, "scale(3)", DOOR_X[i] + " 62%"); } },
+    }));
+
+    const hd = d.HALLS.find(h => h.id === st.hallId) || d.HALLS[0];
+    const hall = { num: hd.num, name: t(hd.name), note: t(hd.note), label: "Hall " + hd.num + " — " + t(hd.name) };
+
+    const Z = {
+      left: { t: "scale(2.5)", o: "12% 50%" },
+      center: { t: "scale(2.2)", o: "50% 44%" },
+      right: { t: "scale(2.5)", o: "88% 50%" },
+    };
+    // centre-wall overlay bounds and small-text inks, measured against each painting
+    const CWALL = {
+      research: { top: "21.2%", bot: "11.3%", label: "27.5%", dim: "var(--color-neutral-800)", cue: "var(--color-accent-800)" },
+      commercial: { top: "21.2%", bot: "11.3%", label: "27.5%", dim: "var(--color-neutral-800)", cue: "var(--color-accent-800)" },
+      early: { top: "20.9%", bot: "15.5%", label: "23.4%", dim: "var(--color-neutral-900)", cue: "var(--color-accent-900)" },
+    };
+    const wall = side => {
+      const pid = hd.projects.find(id => P[id].wall === side) || hd.projects[0];
+      const p = P[pid];
+      const cw = CWALL[hd.id] || CWALL.research;
+      const light = side === "center";
+      return {
+        plate: p.plate,
+        ink: light ? "var(--color-text)" : "rgba(247,245,241,0.95)",
+        inkDim: light ? cw.dim : "rgba(247,245,241,0.72)",
+        cue: light ? cw.cue : "rgba(247,245,241,0.86)",
+        cTop: cw.top,
+        cBot: cw.bot,
+        cLabel: cw.label,
+        num: p.num,
+        year: t(p.year),
+        title: t(p.title),
+        tagline: t(p.tagline) || t(p.kicker),
+        tint: st.hover === side ? 0.5 : 0,
+        enter: () => this.setState({ hover: side }),
+        leave: () => this.setState({ hover: null }),
+        aria: t(p.title) + " — " + UI.cueLong,
+        go: () => this.walkTo({ view: "landing", projectId: pid }, Z[side].t, Z[side].o),
+        key: e => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.walkTo({ view: "landing", projectId: pid }, Z[side].t, Z[side].o); }
+        },
+      };
+    };
+
+    // Figures follow the reference painting's proportions: total ~9.5em,
+    // head 1.65 / torso 4.3 / legs 3.7, shoulders 2.15 wide.
+    // The painted visitors: each part is a soft-masked patch of the painting itself,
+    // pinned over its own pixels, so a fractional rotation reads as a nod or a shift
+    // without cutting the figure out of the artwork. Boxes are in 1672x941 image px.
+    const IW = 1672, IH = 941;
+    // [kind, x0, y0, x1, y1, pivotY, durationS, delayS, keyframe]  in painting pixels
+    const PARTS = [
+      ["h", 200, 526, 250, 584, 582, 6.4, 0, "a"],
+      ["h", 292, 444, 346, 508, 508, 7.8, 1.6, "c"],
+      ["h", 380, 448, 436, 512, 512, 8.6, 3.1, "b"],
+      ["h", 596, 590, 650, 644, 642, 5.2, 0.7, "a"],
+      ["h", 736, 600, 794, 656, 654, 6.1, 2.4, "b"],
+      ["h", 854, 606, 910, 662, 660, 4.8, 1.1, "c"],
+      ["h", 934, 624, 994, 680, 678, 5.6, 3.4, "a"],
+      ["h", 1024, 594, 1080, 650, 648, 5, 2, "b"],
+      ["h", 1254, 458, 1320, 526, 525, 7.2, 0.5, "c"],
+      ["h", 1350, 462, 1418, 532, 530, 8.1, 2.8, "a"],
+      ["h", 1436, 468, 1498, 536, 535, 7.6, 4.2, "b"],
+      ["t", 582, 632, 664, 702, 698, 7.4, 0.4, "a"],
+      ["t", 726, 644, 802, 708, 704, 8.8, 2.2, "b"],
+      ["t", 842, 648, 918, 714, 710, 6.8, 3.6, "a"],
+      ["t", 922, 668, 1000, 738, 734, 9.4, 1.3, "b"],
+      ["t", 1012, 636, 1094, 706, 702, 8, 4.6, "a"],
+    ];
+    const figureParts = (this.props.figureMotion === false || st.hallId !== "research") ? null : PARTS.map((q, i) => {
+      const kind = q[0], x0 = q[1], y0 = q[2], x1 = q[3], y1 = q[4], pivot = q[5];
+      const w = x1 - x0, h = y1 - y0;
+      const head = kind === "h";
+      return React.createElement("div", { key: "fp" + i, style: {
+        position: "absolute",
+        left: (x0 / IW * 100) + "%", top: (y0 / IH * 100) + "%",
+        width: (w / IW * 100) + "%", height: (h / IH * 100) + "%",
+        backgroundImage: "url('img/hall-research.jpg')",
+        backgroundSize: (IW / w * 100) + "% " + (IH / h * 100) + "%",
+        backgroundPosition: (x0 / (IW - w) * 100) + "% " + (y0 / (IH - h) * 100) + "%",
+        backgroundRepeat: "no-repeat",
+        maskImage: head
+          ? "radial-gradient(ellipse 60% 56% at 50% 58%, #000 56%, rgba(0,0,0,0.5) 78%, transparent 94%)"
+          : "radial-gradient(ellipse 62% 64% at 50% 62%, #000 52%, rgba(0,0,0,0.45) 76%, transparent 95%)",
+        WebkitMaskImage: head
+          ? "radial-gradient(ellipse 60% 56% at 50% 58%, #000 56%, rgba(0,0,0,0.5) 78%, transparent 94%)"
+          : "radial-gradient(ellipse 62% 64% at 50% 62%, #000 52%, rgba(0,0,0,0.45) 76%, transparent 95%)",
+        transformOrigin: "50% " + ((pivot - y0) / h * 100) + "%",
+        animation: (head ? "fig-nod-" : "fig-sway-") + q[8] + " " + q[6] + "s ease-in-out " + q[7] + "s infinite",
+        willChange: "transform",
+      } });
+    });
+
+    const ghosts = this.props.ghostVisitors === false ? null : this._ghosts.map((g, i) => {
+      const wash = "rgba(247,245,241,0.9)";
+      const leg = n => React.createElement("div", { key: n, style: {
+        width: "0.5em", height: "3.7em", borderRadius: "0.06em 0.06em 0.26em 0.26em",
+        background: wash, transformOrigin: "50% 0%",
+        animation: "gm-step-" + n + " " + g.step + "s ease-in-out infinite" } });
+      return React.createElement("div", { key: "gh" + i, ref: el => { this._gEl[i] = el; }, style: {
+        position: "absolute", left: 0, bottom: 0, opacity: 0, transform: "translateX(-50%)",
+        willChange: "left, opacity" } },
+        React.createElement("div", { ref: el => { this._gBody[i] = el; }, style: {
+          display: "flex", flexDirection: "column", alignItems: "center", filter: "blur(0.6px)",
+          animation: "gm-bob " + g.step + "s ease-in-out infinite" } },
+          React.createElement("div", { key: "h", style: { width: "1.4em", height: "1.65em", borderRadius: "0.7em 0.7em 0.6em 0.6em", background: wash } }),
+          React.createElement("div", { key: "t", style: { width: "2.15em", height: "4.3em", borderRadius: "1.05em 1.05em 0.28em 0.28em", background: wash, marginTop: "-0.12em" } }),
+          React.createElement("div", { key: "l", style: { display: "flex", gap: "0.35em", marginTop: "-0.06em" } }, leg("a"), leg("b"))));
+    });
+
+    const z = st.zoom;
+
+    const zoomOn = (src, alt) => ({
+      zoom: src ? () => this.setState({ lightbox: src, lightboxAlt: alt }) : null,
+      zoomLabel: src ? UI.fullSize + ": " + alt : alt,
+      key: src ? (e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.setState({ lightbox: src, lightboxAlt: alt }); } }) : null,
+    });
+
+    // no hero image of its own? borrow the first slide from the case study
+    const heroOf = pr => {
+      if (pr.hero && pr.hero.src) return pr.hero;
+      const fromParts = (pr.parts || []).map(x => (x.slides || [])[0]).find(Boolean);
+      const fromSecs = (pr.sections || []).map(s => ((s.images || [])[0] || {}).src).find(Boolean);
+      const src = fromParts || fromSecs;
+      if (!src) return pr.hero;
+      return Object.assign({}, pr.hero, { src, ph: null, ratio: null, fit: null, pos: null, crop: false });
+    };
+
+    const img = o => o
+      ? { src: o.src || "", bg: o.src ? 'url("' + o.src + '")' : "none", cls: "", ph: o.src ? "" : t(o.ph), ratio: (!o.crop && this.nat[o.src]) || o.ratio || "3 / 2", fit: o.crop ? (o.fit || "cover") : "contain", pos: o.pos || "50% 50%", caption: t(o.caption), alt: t(o.caption) || t(o.ph), ...zoomOn(o.src || "", t(o.caption) || t(o.ph)) }
+      : { src: "", bg: "none", cls: "", ph: "", ratio: "3 / 2", fit: "cover", pos: "50% 50%", caption: "", alt: "", ...zoomOn("", "") };
+
+    let p = null, sections = [], prev = null, next = null;
+    const pid = st.projectId;
+    if (pid && P[pid]) {
+      const pr = P[pid];
+      const ph = d.HALLS.find(h => h.id === pr.hall) || hd;
+      const list = ph.projects;
+      const i = list.indexOf(pid);
+      const light = pr.plate === "#dfe4ea";
+      p = {
+        num: pr.num, theme: pr.theme || "", plate: pr.plate,
+        plateText: light ? "var(--color-text)" : "rgba(248,244,244,0.88)",
+        kicker: t(pr.kicker), title: t(pr.title), standfirst: t(pr.standfirst),
+        year: t(pr.year), role: t(pr.role), collab: t(pr.collab),
+        methods: (pr.methods || []).map(t), results: (pr.results || []).map(t),
+        hero: img(heroOf(pr)), hallName: t(ph.name),
+        label: t(pr.title), caseLabel: t(pr.title) + " — case study",
+      };
+      const rawSecs = (pr.parts && pr.parts.length)
+        ? pr.parts.map(p => ({ id: p.id, label: p.label, heading: p.label, lede: null, body: p.summary,
+                               images: [], slides: p.slides || [], code: p.code || null, video: p.video || null }))
+        : (pr.sections || []).map(s => Object.assign({ slides: [], code: null }, s));
+      sections = rawSecs.map((s, n) => {
+        const sid = "sec-" + pid + "-" + s.id;
+        const on = st.active === sid;
+        return {
+        id: sid,
+        current: on ? "true" : "false",
+        navColor: on ? "var(--color-accent-800)" : "var(--color-neutral-800)",
+        navWeight: on ? 600 : 400,
+        barOp: on ? 1 : 0,
+        go: () => this.jump(sid, true),
+        goFromLanding: () => { this._pending = sid; this.go({ view: "case", projectId: pid }); },
+        n: String(n + 1).padStart(2, "0"),
+        label: t(s.label), heading: t(s.heading), lede: t(s.lede), body: t(s.body),
+        hasLede: !!t(s.lede),
+        hasImages: (s.images || []).length > 0,
+        images: (s.images || []).map(img),
+        hasSlides: (s.slides || []).length > 0,
+        stack: !!pr.fitWidth,
+        carousel: !pr.fitWidth,
+        slideN: (s.slides || []).length,
+        railId: "rail-" + sid,
+        slides: (s.slides || []).map((src, k) => {
+          const alt = t(s.label) + " — " + (k + 1);
+          return { src, alt, framed: !!pr.slideFrame, plain: !pr.slideFrame,
+                   zoomLabel: UI.fullSize + ": " + alt, zoom: () => this.setState({ lightbox: src, lightboxAlt: alt }) };
+        }),
+        hasVideo: !!(s.video && s.video.src),
+        videoSrc: s.video ? s.video.src : "",
+        videoPoster: s.video ? (s.video.poster || "") : "",
+        videoCaption: s.video ? t(s.video.caption) : "",
+        hasCode: !!s.code,
+        codeLabel: s.code ? t(s.code.label) : "",
+        codeText: s.code ? s.code.text : "",
+        prev: () => this.railScroll(sid, -1),
+        next: () => this.railScroll(sid, 1),
+      }; });
+      if (i > 0) {
+        const q = list[i - 1];
+        prev = { title: t(P[q].title), go: () => this.go({ view: "landing", projectId: q }) };
+      }
+      if (i > -1 && i < list.length - 1) {
+        const q = list[i + 1];
+        next = {
+          title: t(P[q].title),
+          go: () => this.go({ view: "landing", projectId: q }),
+          goCase: () => this.go({ view: "case", projectId: q }),
+        };
+      }
+    }
+
+    if (p) this.measure([p.hero.src].concat(sections.flatMap(s => s.images.map(i => i.src))));
+
+    const crumb = st.view === "entrance" ? UI.entranceKicker
+      : st.view === "concourse" ? UI.concourse
+      : st.view === "hall" ? hall.num + " · " + hall.name
+      : p ? p.hallName + " · " + p.title
+      : UI.allHalls;
+
+    return Object.assign(base, {
+      ui: UI, halls, hall, ghosts, figureParts,
+      dA: doors[0] || {}, dB: doors[1] || {}, dC: doors[2] || {},
+      wL: wall("left"), wC: wall("center"), wR: wall("right"),
+      sceneT: z ? z.t : "scale(1)",
+      sceneO: z ? z.o : "50% 50%",
+      sceneOp: z ? 0 : 1,
+      doors,
+      p: p || { hero: { src: "", bg: "none", cls: "", ph: "", ratio: "3 / 2", fit: "cover", pos: "50% 50%", caption: "", alt: "", zoom: null, zoomLabel: "", key: null }, methods: [], results: [] },
+      hasLightbox: !!st.lightbox,
+      lightbox: st.lightbox || "",
+      lightboxBg: st.lightbox ? "url('" + st.lightbox + "')" : "none",
+      lightboxAlt: st.lightboxAlt || "",
+      closeLightbox: () => this.setState({ lightbox: null, lightboxAlt: "" }),
+      pageBg: (p && p.theme) ? "color-mix(in oklab, " + p.theme + " 10%, var(--color-bg))" : "var(--color-bg)",
+      sections, prev, next, hasPrev: !!prev, hasNext: !!next, crumb,
+      goCase: () => this.go({ view: "case", projectId: st.projectId }),
+      backToHall: () => this.go({ view: "hall", hallId: (P[st.projectId] && P[st.projectId].hall) || st.hallId, projectId: null, zoom: null, hover: null }),
+    });
+  }
+}
+
+</script>
+</body>
+</html>

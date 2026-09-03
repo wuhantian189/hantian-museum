@@ -1,0 +1,6 @@
+.DS_Store
+
+# PNG masters for the two repainted hall illustrations (5 MB).
+# Nothing on the site references them; the JPEGs in img/ are what is served.
+# They also live in the Claude Design project. Drop this line to version them.
+img/_src/
